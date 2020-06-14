@@ -28,7 +28,7 @@ jobs:
      os: linux
      dist: bionic
      compiler: gcc
-    script:
+     script:
        - cmake -D CMAKE_BUILD_TYPE=Release . && cmake --build .
        - ls -l ${PWD}
      deploy:
