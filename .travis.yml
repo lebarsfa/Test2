@@ -15,7 +15,6 @@ deploy:
   provider: releases
   api_key:
     secure: CHJQyn5D14/i8azj6dWdbvOKbz85smGPReE6+Qwl2ItADfyw+7MM3ySg7mua53nXr4vzOTymcvdmeiB/PO6B7jV0vP8jeqwohXTM1QBIs2b5xWfqTez4YzZHVPL2jhyqa5ylkakeeCFO6sXLYYIlrflGquU0TgTRla+ehMhmZJsWZmJqloRzO5+7hI1FALOlu3/13423ipTc505rbTgFRTKhkFVtwjjwR0gpiQ/8TCk8NKOV/MT0Z4kfp96h/hjg1NFmaaJPF65e7jFWLgj/soBVMMQkg1fMYNz31DRa77StHIb2L3/KWf/ZZADgILCdhg2/tuuH4qPlPF0Gfs8dBE7763RoB9nY2S5aYxtEHtQE70SghjvMOnLjaBP58rJB3vAVJbQINyiwKKaT5ST757gKLuCZrSM3P6E2efpyN7AG8kAK/moE5k0tgw5dJ+5qH2Djb8HKO0ALMslzsu+XpuO8R5gbRRMbJMf6tejQ74XO3F9huQ2k3+Of/rO7I3OTsc05AptbBgS7M0vr//Us5hrb53kdvdJ+2lkhMF+Me7DAjyxxk9/sk3PMqNnoTy/cIWYgO+wI3wnCWlAvf17cKsIjrMk7Pnb2BV9qz2iu2b/nixw/c1RVtynSI8LYTcKp2v9BLoFcpbWsvJqnVLb1R/57GQoxsjUj1rgYIdGlgf0=
-  file: ''
   on:
     repo: lebarsfa/Test2
   skip_cleanup: 'true'
