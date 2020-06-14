@@ -1,20 +1,37 @@
 language: cpp
+
+# https://github.com/electron-userland/electron-builder/issues/3559
 if: tag IS blank
+
 env:
-- TRAVIS_TAG="autotagname"
+      # https://github.com/electron-userland/electron-builder/issues/3559
+    - TRAVIS_TAG="autotagname"
+
+deploy: &deploy_base
+    provider: releases
+#    name: ${TRAVIS_TAG}
+    tag_name: ${TRAVIS_TAG}
+#    target_commitish: master
+    body: "    One paragraph only"
+    api_key:
+        secure: ZEdPu5TaNpQfT+u5n8hO2MM64kPr1CHyKB6DJ1TOQr494+duhK1iGGNeHz1UpSpXBBQxWCJ813hQpe2q5uBYxOgu82P4hAfvzmHAy/VAq2Yynbv9iW8EBP9P3Hu/zjk8hgUFxmYe4YuV9G4slIeMEhboIx3XELz3PtLkphHbqQmivQ/qhWFvfUyF1b+hRq5Tf2iwaPftIujFWm35uV7B//w/QqbPKNY/VGqynvLrIwAWGqSYpnnldzFjq+uxqT5MRhtYATNrUKtVo3UJyIgol+6A/c/5DMwVKb3MeVJTwt7Jwb2b/CSfULFmESeKQqcBXORiu4o72pxiYwdrcqeiHSEFqOJq4wBIDMfGqphwifdjJMqPyp4dzbjqIm87vWtfXOYDJjmbNcsWebY2xcRglpwNWkr8ySEwfI8GgMd0jbYRH8nNDMI0DCGWzHzivywokUem1MLzdGATFV6y723rC8yMyNs13omtr4nL9/WeCJMehD5sCOL2UEG1VYsyFYH/YCXlxRx0IDC76hNQCffzgba0Lnln6oFz7PQP6TV8cYd8MsNQfP3Y2o3FKJyAGUgVghaQ2jRLOmP/czPZL/2uV72Eanv/FAkxAf0bpLve0prSBPKGq0/2gheoIcVG96LRfh6EYFryrj9tV1klX7vvAv/+gYnjYA/AInxoVFKllG8=
+    skip_cleanup: true
+    overwrite: true
+    draft: true
+    prerelease: true
+#        on:
+#           tags: true
+
 jobs:
   include:
-  - name: Ubuntu
-    os: linux
-    dist: bionic
-    compiler: gcc
+   - name: "Ubuntu"
+     os: linux
+     dist: bionic
+     compiler: gcc
     script:
-    - cmake -D CMAKE_BUILD_TYPE=Release . && cmake --build .
-    - ls -l ${PWD}
-deploy:
-  provider: releases
-  api_key:
-    secure: E54ALQhF06QmVxXpYIUJ2sykMmyjdHhu/wgT1mY7TzUqxJNuZD1NZTyQXj+IgAm0jOArfjnI0sTeICTwnse7DZgm5dKSGW7hPlG/coC8nWDH3bhX4pcT5EYnfFyNcBlZXS3XdVd73zbEcp0U8iBURyL8t7Lp5vMtYsvx3EqRJ4tXfv4QTpr/2hUW+Tv5b/kh3ABsUN++8R3Ad1J9sv0FNTqsy9UmtcyAbXhJJcUyom/UDWiH3GJ4z/FLDIdT6K8Ip0rzgS6car5YJImExb/fviNngd+MygaMErYsJSR2+0HMRRodHQdz87UAK4MOY5xawk147V5mKc1IURI3bWlkfo/xcV2mUTpLxAZsdqqTQZiu/rBsULkGoWAKnO3zMjICEUUwY4kud0F2ZYuWk6vNUp+2RtVIhzApah1SCAh1uqpQ2WF9QuazNZiyz8ZzPVXwdp6dPNYIkcIBq3HU9qeVF8kqPlJk9XkDHTjxT9MRxiE0i7unlclQgK1vAnAF4DX9qrnXFfThpBvFQZxrJXoVPmHAlWMQYRNoUrr3s0g9NQXWKECei6X7TKyw8tagg6g7cTn+z6QbVWD3z9IrA3/tXKrDJLZvZb2IU7TLsUAfcZ2vdhWmKFKvSVySd40lr4zIzYmWFmF/CBDvKDYwOiSUH51gZIITQmYSZoEWfY/blig=
-  on:
-    repo: lebarsfa/Test2
-  skip_cleanup: 'true'
+       - cmake -D CMAKE_BUILD_TYPE=Release . && cmake --build .
+       - ls -l ${PWD}
+     deploy:
+       <<: *deploy_base
+       file:
+            - Hello
