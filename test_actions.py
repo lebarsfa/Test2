@@ -9,9 +9,9 @@
 #            the GNU Lesser General Public License (LGPL).
 
 import unittest
-import numpy as np
 from codac import *
 from codac.codac2 import *
+import numpy as np
 
 class TestActions(unittest.TestCase):
 
