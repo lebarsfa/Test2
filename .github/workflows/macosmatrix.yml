@@ -38,6 +38,6 @@ jobs:
       if: matrix.cfg.py_v_maj!=''
     - run: echo "VERBOSE=1" >> $GITHUB_ENV
       shell: bash
-    - run: pip install codac ; python -c "import sys; print(sys.version)" ; python 01_getting_started.py ; pip install numpy ; python test_actions.py
+    - run: pip install *.whl ; python -c "import sys; print(sys.version)" ; python examples/tuto/01_getting_started/01_getting_started.py ; pip install numpy ; python -m unittest discover codac.tests
       shell: bash
       if: (runner.os=='macOS')&&(matrix.cfg.arch=='x86_64')
