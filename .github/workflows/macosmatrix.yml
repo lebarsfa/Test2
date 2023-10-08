@@ -1,0 +1,43 @@
+# This file generates Python wheels for Windows
+# (and zip for having Codac and IBEX binaries for several Visual Studio versions)
+on:
+    push:
+        branches: 'master'
+        tags: '' # Restrict to blank tags
+    pull_request:
+
+jobs:
+ macosmatrix:
+    runs-on: ${{ matrix.cfg.os }}
+    env:
+        MACOSX_DEPLOYMENT_TARGET: ${{ matrix.cfg.trgt }}
+        _PYTHON_HOST_PLATFORM: macosx-${{ matrix.cfg.trgt }}-${{ matrix.cfg.arch }}
+    defaults:
+        run:
+            shell: ${{ matrix.cfg.shell }}
+    strategy:
+        fail-fast: false
+        matrix:
+            cfg:
+            - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.9', cpcfg: '-macosx_10_9_x86_64', py_v_maj: 3, py_v_min: 12, desc: 'macOS Big Sur Python 3.12 x86_64' }
+    name: ${{ matrix.cfg.desc }}
+    steps: 
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+        fetch-depth: 0
+        clean: false
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.cfg.py_v_maj }}.${{ matrix.cfg.py_v_min }}
+        architecture: x64
+      if: matrix.cfg.py_v_maj!=''
+    - run: |
+        python -c "import sys; print(sys.version)"
+        echo ${{ matrix.cfg.py_v_maj }}.${{ matrix.cfg.py_v_min }}
+      if: matrix.cfg.py_v_maj!=''
+    - run: echo "VERBOSE=1" >> $GITHUB_ENV
+      shell: bash
+    - run: pip install codac ; python -c "import sys; print(sys.version)" ; pip install numpy ; python -m unittest discover codac.tests
+      shell: bash
+      if: (runner.os=='macOS')&&(matrix.cfg.arch=='x86_64')
