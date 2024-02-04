@@ -105,16 +105,16 @@ jobs:
         echo BASHMINGWPATH=/c/ProgramData/mingw64/mingw${{ matrix.cfg.bitness }}/bin>>%GITHUB_ENV%
       if: (matrix.cfg.runtime=='mingw13')
     - run: |
-        source ~/refreshenv.bashrc ; refreshenv
         export PATH=$BASHMINGWPATH:$PATH
+        source ~/refreshenv.bashrc ; refreshenv
         echo $PATH
         git clone --depth 1 -b libopencv-dev.${{ env.OPENCVVER }} https://github.com/lebarsfa/Packages
         export _RUNTIME=${{ matrix.cfg.runtime }}
         if [[ ${{ matrix.cfg.shared }} = OFF ]]; then export _STATIC=static ; else unset _STATIC ; fi
         wget https://packages.ensta-bretagne.fr/choco/libopencv-dev.${{ env.OPENCVVER }}.${{ env.OPENCVCHOCOSUBVER }}.nupkg --no-check-certificate -nv
         choco install -y -r --no-progress --ignore-dependencies -s. libopencv-dev --params "'/url:https://github.com/lebarsfa/Packages/releases/download/libopencv-dev.${{ env.OPENCVVER }}.${{ env.OPENCVRELSUBVER }}/libopencv-dev.${{ env.OPENCVVER }}_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}_${_STATIC}lib_${{ matrix.cfg.cmake_config }}.exe'"
-        source ~/refreshenv.bashrc ; refreshenv
         export PATH=$BASHMINGWPATH:$PATH
+        source ~/refreshenv.bashrc ; refreshenv
         echo $PATH
         reg query "HKLM\SOFTWARE\Kitware\CMake\Packages\OpenCV"
         cd Packages/choco/libopencv-dev/tools/cv_mat_test
