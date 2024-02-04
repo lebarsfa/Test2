@@ -107,22 +107,18 @@ jobs:
         git clone --depth 1 -b libopencv-dev.${{ env.OPENCVVER }} https://github.com/lebarsfa/Packages
         export _RUNTIME=${{ matrix.cfg.runtime }}
         if [[ ${{ matrix.cfg.shared }} = OFF ]]; then export _STATIC=static ; else unset _STATIC ; fi
-        cd Packages/choco/libopencv-dev
-        mv tools/cv_mat_test ..
-        mv tools/no_iconv_mingw.patch ..
         wget https://packages.ensta-bretagne.fr/choco/libopencv-dev.${{ env.OPENCVVER }}.${{ env.OPENCVCHOCOSUBVER }}.nupkg --no-check-certificate -nv
         choco install -y -r --no-progress --ignore-dependencies -s. libopencv-dev --params "'/url:https://github.com/lebarsfa/Packages/releases/download/libopencv-dev.${{ env.OPENCVVER }}.${{ env.OPENCVRELSUBVER }}/libopencv-dev.${{ env.OPENCVVER }}_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}_${_STATIC}lib_${{ matrix.cfg.cmake_config }}.exe'"
         echo "/c/OpenCV${{ env.OPENCVVER }}/${{ matrix.cfg.arch }}/${_RUNTIME:0:5}/bin" >> $GITHUB_PATH
         export PATH=/c/OpenCV${{ env.OPENCVVER }}/${{ matrix.cfg.arch }}/${_RUNTIME:0:5}/bin:$PATH
         echo $PATH
         reg query "HKLM\SOFTWARE\Kitware\CMake\Packages\OpenCV"
-        cd ../cv_mat_test
+        cd Packages/choco/libopencv-dev/tools/cv_mat_test
         if [[ ${{ matrix.cfg.shared }} = ON ]]; then export OpenCV_STATIC=OFF ; else export OpenCV_STATIC=ON ; fi
         cmake ${{ matrix.cfg.cmake_params }} -D OpenCV_ARCH=${{ matrix.cfg.arch }} -D OpenCV_RUNTIME=${_RUNTIME:0:5} -D OpenCV_STATIC=$OpenCV_STATIC . || true
         cmake --build . --config ${{ matrix.cfg.cmake_config }}
         file ./${{ matrix.cfg.test_config }}cv_mat_test
         ./${{ matrix.cfg.test_config }}cv_mat_test
-        cd ../..
       shell: bash
     - run: |
         Import-Module "$env:ChocolateyInstall/helpers/chocolateyInstaller.psm1"
