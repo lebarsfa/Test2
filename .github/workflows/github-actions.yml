@@ -111,7 +111,7 @@ jobs:
         source ~/refreshenv.bashrc ; refreshenv ; cat ~/refreshenv.bashrc ; cat "$TEMP/refresh.env"
         #source ~/refreshenv.sh
         echo $BASHMINGWPATH
-        export PATH=$BASHMINGWPATH:$PATH
+        export PATH=/c${BASHMINGWPATH:2}:$PATH
         echo $BASHMINGWPATH
         echo $PATH
         git clone --depth 1 -b libopencv-dev.${{ env.OPENCVVER }} https://github.com/lebarsfa/Packages
@@ -122,7 +122,7 @@ jobs:
         source ~/refreshenv.bashrc ; refreshenv ; cat ~/refreshenv.bashrc ; cat "$TEMP/refresh.env"
         #source ~/refreshenv.sh
         echo $BASHMINGWPATH
-        export PATH=$BASHMINGWPATH:$PATH
+        export PATH=/c${BASHMINGWPATH:2}:$PATH
         echo $BASHMINGWPATH
         echo $PATH
         reg query "HKLM\SOFTWARE\Kitware\CMake\Packages\OpenCV"
