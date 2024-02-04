@@ -108,8 +108,8 @@ jobs:
       if: (matrix.cfg.runtime=='mingw13')
     - run: |
         echo $BASHMINGWPATH
-        source ~/refreshenv.bashrc ; refreshenv ; cat ~/refreshenv.bashrc ; cat "$TEMP/refresh.env"
-        #source ~/refreshenv.sh
+        #source ~/refreshenv.bashrc ; refreshenv ; cat ~/refreshenv.bashrc ; cat "$TEMP/refresh.env"
+        source ~/refreshenv.sh
         echo $BASHMINGWPATH
         export PATH=$BASHMINGWPATH:$PATH
         echo $BASHMINGWPATH
@@ -119,8 +119,8 @@ jobs:
         if [[ ${{ matrix.cfg.shared }} = OFF ]]; then export _STATIC=static ; else unset _STATIC ; fi
         wget https://packages.ensta-bretagne.fr/choco/libopencv-dev.${{ env.OPENCVVER }}.${{ env.OPENCVCHOCOSUBVER }}.nupkg --no-check-certificate -nv
         choco install -y -r --no-progress --ignore-dependencies -s. libopencv-dev --params "'/url:https://github.com/lebarsfa/Packages/releases/download/libopencv-dev.${{ env.OPENCVVER }}.${{ env.OPENCVRELSUBVER }}/libopencv-dev.${{ env.OPENCVVER }}_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}_${_STATIC}lib_${{ matrix.cfg.cmake_config }}.exe'"
-        source ~/refreshenv.bashrc ; refreshenv ; cat ~/refreshenv.bashrc ; cat "$TEMP/refresh.env"
-        #source ~/refreshenv.sh
+        #source ~/refreshenv.bashrc ; refreshenv ; cat ~/refreshenv.bashrc ; cat "$TEMP/refresh.env"
+        source ~/refreshenv.sh
         echo $BASHMINGWPATH
         export PATH=$BASHMINGWPATH:$PATH
         echo $BASHMINGWPATH
