@@ -82,8 +82,10 @@ jobs:
         7z x windows_server_core_prereq.zip -o"%SystemRoot%" -y & cd. & rem ksuser.dll already on windows-2016...?
         wget http://www.ensta-bretagne.fr/lebars/Share/cmake_extra_tools.zip --no-check-certificate -nv
         7z x cmake_extra_tools.zip -o"%SystemDrive%" -y
-        wget https://gist.github.com/lebarsfa/237841f9e5dad55ef192713b3b1b2f16/raw/f1dd5f8ef30f85f9f6a3550d8d7e90abebca274b/refreshenv.bashrc --no-check-certificate -nv
+        wget https://gist.github.com/lebarsfa/237841f9e5dad55ef192713b3b1b2f16/raw/04d77ced3457346c55f183ca12a10dbcb850e6d5/refreshenv.bashrc --no-check-certificate -nv
         move /y refreshenv.bashrc %USERPROFILE%
+        wget https://github.com/badrelmers/RefrEnv/raw/e6165d8e1a21dafabf900a4d7e251a127c5cfa67/refrenv.sh --no-check-certificate -nv
+        move /y refrenv.sh %USERPROFILE%\refreshenv.sh
     - run: |
         choco uninstall -y -r --no-progress mingw --force & rd /s /q C:\mingw64 & choco install -y -r --no-progress mingw --version=8.1.0 --force ${{ matrix.cfg.choco_flags }}
         %SystemDrive%\cmake_extra_tools\pathman /as C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw${{ matrix.cfg.bitness }}\bin & cd. & rem Non-zero exit code...?
@@ -106,7 +108,8 @@ jobs:
       if: (matrix.cfg.runtime=='mingw13')
     - run: |
         echo $BASHMINGWPATH
-        source ~/refreshenv.bashrc ; refreshenv
+        source ~/refreshenv.bashrc ; refreshenv ; cat ~/refreshenv.bashrc ; cat "$TEMP/refresh.env"
+        #source ~/refreshenv.sh
         echo $BASHMINGWPATH
         export PATH=$BASHMINGWPATH:$PATH
         echo $BASHMINGWPATH
@@ -116,7 +119,8 @@ jobs:
         if [[ ${{ matrix.cfg.shared }} = OFF ]]; then export _STATIC=static ; else unset _STATIC ; fi
         wget https://packages.ensta-bretagne.fr/choco/libopencv-dev.${{ env.OPENCVVER }}.${{ env.OPENCVCHOCOSUBVER }}.nupkg --no-check-certificate -nv
         choco install -y -r --no-progress --ignore-dependencies -s. libopencv-dev --params "'/url:https://github.com/lebarsfa/Packages/releases/download/libopencv-dev.${{ env.OPENCVVER }}.${{ env.OPENCVRELSUBVER }}/libopencv-dev.${{ env.OPENCVVER }}_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}_${_STATIC}lib_${{ matrix.cfg.cmake_config }}.exe'"
-        source ~/refreshenv.bashrc ; refreshenv
+        source ~/refreshenv.bashrc ; refreshenv ; cat ~/refreshenv.bashrc ; cat "$TEMP/refresh.env"
+        #source ~/refreshenv.sh
         echo $BASHMINGWPATH
         export PATH=$BASHMINGWPATH:$PATH
         echo $BASHMINGWPATH
