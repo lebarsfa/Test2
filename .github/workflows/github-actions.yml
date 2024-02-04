@@ -105,6 +105,7 @@ jobs:
         echo BASHMINGWPATH=/c/ProgramData/mingw64/mingw${{ matrix.cfg.bitness }}/bin>>%GITHUB_ENV%
       if: (matrix.cfg.runtime=='mingw13')
     - run: |
+        echo $BASHMINGWPATH
         source ~/refreshenv.bashrc ; refreshenv
         echo $BASHMINGWPATH
         export PATH=$BASHMINGWPATH:$PATH
