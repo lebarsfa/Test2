@@ -83,20 +83,27 @@ jobs:
     - run: |
         choco uninstall -y -r --no-progress mingw --force & rd /s /q C:\mingw64 & choco install -y -r --no-progress mingw --version=8.1.0 --force ${{ matrix.cfg.choco_flags }}
         echo C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw${{ matrix.cfg.bitness }}\bin>>%GITHUB_PATH%
+        echo BASHMINGWPATH=/c/ProgramData/chocolatey/lib/mingw/tools/install/mingw${{ matrix.cfg.bitness }}/bin>>%GITHUB_ENV%
       if: (matrix.cfg.runtime=='mingw8')
     - run: |
         choco uninstall -y -r --no-progress mingw --force & rd /s /q C:\mingw64 & choco install -y -r --no-progress mingw --version=11.2.0.07112021 --force ${{ matrix.cfg.choco_flags }}
         echo C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw${{ matrix.cfg.bitness }}\bin>>%GITHUB_PATH%
+        echo BASHMINGWPATH=/c/ProgramData/chocolatey/lib/mingw/tools/install/mingw${{ matrix.cfg.bitness }}/bin>>%GITHUB_ENV%
       if: (matrix.cfg.runtime=='mingw11')
     - run: |
         choco uninstall -y -r --no-progress mingw --force & rd /s /q C:\mingw64 & choco install -y -r --no-progress mingw --version=12.2.0.03042023 --force ${{ matrix.cfg.choco_flags }}
         echo C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw${{ matrix.cfg.bitness }}\bin>>%GITHUB_PATH%
+        echo BASHMINGWPATH=/c/ProgramData/chocolatey/lib/mingw/tools/install/mingw${{ matrix.cfg.bitness }}/bin>>%GITHUB_ENV%
       if: (matrix.cfg.runtime=='mingw12')
     - run: |
         choco uninstall -y -r --no-progress mingw --force & rd /s /q C:\mingw64 & choco install -y -r --no-progress mingw --version=13.2.0 --force ${{ matrix.cfg.choco_flags }}
         echo C:\ProgramData\mingw64\mingw${{ matrix.cfg.bitness }}\bin>>%GITHUB_PATH%
+        echo BASHMINGWPATH=/c/ProgramData/mingw64/mingw${{ matrix.cfg.bitness }}/bin>>%GITHUB_ENV%
       if: (matrix.cfg.runtime=='mingw13')
     - run: |
+        echo $PATH
+        export PATH=$BASHMINGWPATH:$PATH
+        echo $PATH
         git clone --depth 1 -b libopencv-dev.${{ env.OPENCVVER }} https://github.com/lebarsfa/Packages
         export _RUNTIME=${{ matrix.cfg.runtime }}
         if [[ ${{ matrix.cfg.shared }} = OFF ]]; then export _STATIC=static ; else unset _STATIC ; fi
@@ -104,20 +111,29 @@ jobs:
         mv tools/cv_mat_test ..
         mv tools/no_iconv_mingw.patch ..
         wget https://packages.ensta-bretagne.fr/choco/libopencv-dev.${{ env.OPENCVVER }}.${{ env.OPENCVCHOCOSUBVER }}.nupkg --no-check-certificate -nv
-        echo $PATH
         choco install -y -r --no-progress --ignore-dependencies -s. libopencv-dev --params "'/url:https://github.com/lebarsfa/Packages/releases/download/libopencv-dev.${{ env.OPENCVVER }}.${{ env.OPENCVRELSUBVER }}/libopencv-dev.${{ env.OPENCVVER }}_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}_${_STATIC}lib_${{ matrix.cfg.cmake_config }}.exe'"
+        echo "/c/OpenCV${{ env.OPENCVVER }}/${{ matrix.cfg.arch }}/${_RUNTIME:0:5}/bin" >> $GITHUB_PATH
+        export PATH=/c/OpenCV${{ env.OPENCVVER }}/${{ matrix.cfg.arch }}/${_RUNTIME:0:5}/bin:$PATH
         echo $PATH
         reg query "HKLM\SOFTWARE\Kitware\CMake\Packages\OpenCV"
         cd ../cv_mat_test
         if [[ ${{ matrix.cfg.shared }} = ON ]]; then export OpenCV_STATIC=OFF ; else export OpenCV_STATIC=ON ; fi
         cmake ${{ matrix.cfg.cmake_params }} -D OpenCV_ARCH=${{ matrix.cfg.arch }} -D OpenCV_RUNTIME=${_RUNTIME:0:5} -D OpenCV_STATIC=$OpenCV_STATIC . || true
         cmake --build . --config ${{ matrix.cfg.cmake_config }}
-        export PATH=/c/OpenCV${{ env.OPENCVVER }}/${{ matrix.cfg.arch }}/${_RUNTIME:0:5}/bin:$GITHUB_PATH:$PATH
-        echo $PATH
         file ./${{ matrix.cfg.test_config }}cv_mat_test
         ./${{ matrix.cfg.test_config }}cv_mat_test
         cd ../..
-        choco uninstall -y -r --no-progress libopencv-dev
-        echo $PATH
-        reg query "HKLM\SOFTWARE\Kitware\CMake\Packages\OpenCV"
       shell: bash
+    - run: |
+        Import-Module "$env:ChocolateyInstall/helpers/chocolateyInstaller.psm1"
+        refreshenv
+        echo $env:PATH
+        reg query "HKLM\SOFTWARE\Kitware\CMake\Packages\OpenCV"
+        choco uninstall -y -r --no-progress libopencv-dev
+      shell: pwsh
+    - run: |
+        Import-Module "$env:ChocolateyInstall/helpers/chocolateyInstaller.psm1"
+        refreshenv
+        echo $env:PATH
+        reg query "HKLM\SOFTWARE\Kitware\CMake\Packages\OpenCV"
+      shell: pwsh
