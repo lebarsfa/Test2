@@ -108,11 +108,11 @@ jobs:
       if: (matrix.cfg.runtime=='mingw13')
     - run: |
         echo $BASHMINGWPATH
+        export BASHMINGWPATHORIG=$BASHMINGWPATH
         source ~/refreshenv.bashrc ; refreshenv ; cat ~/refreshenv.bashrc ; cat "$TEMP/refresh.env"
         #source ~/refreshenv.sh
         echo $BASHMINGWPATH
-        export PATH=/c${BASHMINGWPATH:2}:$PATH
-        echo $BASHMINGWPATH
+        export PATH=$BASHMINGWPATHORIG:$PATH
         echo $PATH
         git clone --depth 1 -b libopencv-dev.${{ env.OPENCVVER }} https://github.com/lebarsfa/Packages
         export _RUNTIME=${{ matrix.cfg.runtime }}
@@ -122,8 +122,7 @@ jobs:
         source ~/refreshenv.bashrc ; refreshenv ; cat ~/refreshenv.bashrc ; cat "$TEMP/refresh.env"
         #source ~/refreshenv.sh
         echo $BASHMINGWPATH
-        export PATH=/c${BASHMINGWPATH:2}:$PATH
-        echo $BASHMINGWPATH
+        export PATH=$BASHMINGWPATHORIG:$PATH
         echo $PATH
         reg query "HKLM\SOFTWARE\Kitware\CMake\Packages\OpenCV"
         cd Packages/choco/libopencv-dev/tools/cv_mat_test
