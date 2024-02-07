@@ -80,8 +80,10 @@ jobs:
         powershell -Command "Install-WindowsFeature Server-Media-Foundation"
         wget http://www.ensta-bretagne.fr/lebars/Share/windows_server_core_prereq.zip --no-check-certificate -nv
         7z x windows_server_core_prereq.zip -o"%SystemRoot%" -y & cd. & rem ksuser.dll already on windows-2016...?
+        del /f /q windows_server_core_prereq.zip
         wget http://www.ensta-bretagne.fr/lebars/Share/cmake_extra_tools.zip --no-check-certificate -nv
         7z x cmake_extra_tools.zip -o"%SystemDrive%" -y
+        del /f /q cmake_extra_tools.zip
         wget https://gist.github.com/lebarsfa/237841f9e5dad55ef192713b3b1b2f16/raw/04d77ced3457346c55f183ca12a10dbcb850e6d5/refreshenv.bashrc --no-check-certificate -nv
         move /y refreshenv.bashrc %USERPROFILE%
     - run: |
@@ -112,7 +114,7 @@ jobs:
         export _RUNTIME=${{ matrix.cfg.runtime }}
         if [[ ${{ matrix.cfg.shared }} = OFF ]]; then export _STATIC=static ; else unset _STATIC ; fi
         wget https://packages.ensta-bretagne.fr/choco/libopencv-dev.${{ env.OPENCVVER }}.${{ env.OPENCVCHOCOSUBVER }}.nupkg --no-check-certificate -nv
-        choco install -y -r --no-progress --ignore-dependencies -s. libopencv-dev --params "'/url:https://github.com/lebarsfa/Packages/releases/download/libopencv-dev.${{ env.OPENCVVER }}.${{ env.OPENCVRELSUBVER }}/libopencv-dev.${{ env.OPENCVVER }}_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}_${_STATIC}lib_${{ matrix.cfg.cmake_config }}.exe'"
+        choco install -y -r --no-progress --ignore-dependencies -s . libopencv-dev --params "'/url:https://github.com/lebarsfa/Packages/releases/download/libopencv-dev.${{ env.OPENCVVER }}.${{ env.OPENCVRELSUBVER }}/libopencv-dev.${{ env.OPENCVVER }}_${{ matrix.cfg.arch }}_${{ matrix.cfg.runtime }}_${_STATIC}lib_${{ matrix.cfg.cmake_config }}.exe'"
         source ~/refreshenv.bashrc ; refreshenv
         export PATH=$BASHMINGWPATH:$PATH
         echo $PATH
