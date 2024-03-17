@@ -25,7 +25,6 @@ jobs:
     name: ${{ matrix.cfg.desc }}
     steps: 
     - uses: docker/setup-qemu-action@v3
-      if: runner.container=='lebarsfa/pi:buster-for-codac'
     - uses: actions/checkout@v4
       with:
         submodules: true
