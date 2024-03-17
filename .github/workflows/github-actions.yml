@@ -6,19 +6,6 @@ on:
     pull_request:
 
 jobs:
- # This job may be commented if a new release should not be created...
- deploy:
-    runs-on: ubuntu-latest
-    steps: 
-    - uses: softprops/action-gh-release@v1
-      id: create_release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        draft: true
-        tag_name: autotagname-${{ github.sha }}
-      if: github.event_name != 'pull_request'
-
  unixmatrix:
     runs-on: ${{ matrix.cfg.os }}
     defaults:
@@ -37,13 +24,13 @@ jobs:
 ###            - { os: macos-13, shell: bash, arch: x86_64, bitness: 64, runtime: ventura, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=x86_64', cmake_flags: '-fPIC', ilib: 'gaol', desc: 'macOS Ventura x86_64' }
     name: ${{ matrix.cfg.desc }}
     steps: 
+    - uses: docker/setup-qemu-action@v3
+      if: runner.container=='lebarsfa/pi:buster-for-codac'
     - uses: actions/checkout@v4
       with:
         submodules: true
         fetch-depth: 1
         clean: false
-    - uses: docker/setup-qemu-action@v3
-      if: runner.container=='lebarsfa/pi:buster-for-codac'
     - run: |
         echo ${{ runner.os }}
         echo ${{ runner.container }}
