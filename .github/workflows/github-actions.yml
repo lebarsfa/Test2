@@ -42,8 +42,11 @@ jobs:
         submodules: true
         fetch-depth: 1
         clean: false
+    - uses: docker/setup-qemu-action@v3
+      if: runner.container=='lebarsfa/pi:buster-for-codac'
     - run: |
         echo ${{ runner.os }}
+        echo ${{ runner.container }}
         echo ${{ matrix.cfg.arch }}
         pwd 
         uname -a
