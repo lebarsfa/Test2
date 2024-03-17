@@ -1,12 +1,52 @@
-#on: [push, pull_request]
-on: 
+on:
     push:
         branches: '**'
+#        branches: 'master'
         tags: '' # Restrict to blank tags
     pull_request:
-    #pull_request_target: # This would run the old version of the actions, which could cause confusions...
+
 jobs:
- build:
-    runs-on: macos-14
+ # This job may be commented if a new release should not be created...
+ deploy:
+    runs-on: ubuntu-latest
     steps: 
-    - uses: mxschmitt/action-tmate@v3
+    - uses: softprops/action-gh-release@v1
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        draft: true
+        tag_name: autotagname-${{ github.sha }}
+      if: github.event_name != 'pull_request'
+
+ unixmatrix:
+    runs-on: ${{ matrix.cfg.os }}
+    defaults:
+        run:
+            shell: ${{ matrix.cfg.shell }}
+    container: ${{ matrix.cfg.container }}
+    strategy:
+        fail-fast: false
+        matrix:
+            cfg:
+            - { os: ubuntu-22.04, shell: bash, arch: amd64, bitness: 64, runtime: jammy, cmake_flags: '-fPIC', ilib: 'gaol', desc: 'Ubuntu 22.04' }
+            - { container: lebarsfa/pi:buster-for-codac, os: ubuntu-20.04, shell: bash, arch: armhf, bitness: 32, runtime: buster, cmake_flags: '-fPIC', ilib: 'gaol', desc: 'Raspbian Buster armv6hf' }
+###            - { os: macos-14, shell: bash, arch: arm64, bitness: 64, runtime: sonoma, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=arm64', cmake_flags: '-fPIC', ilib: 'gaol', desc: 'macOS Sonoma arm64' }
+#            - { os: macos-14, shell: bash, arch: x86_64, bitness: 64, runtime: sonoma, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=x86_64', cmake_flags: '-fPIC', ilib: 'filib', desc: 'macOS Sonoma x86_64' }
+#            - { os: macos-13, shell: bash, arch: arm64, bitness: 64, runtime: ventura, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=arm64', cmake_flags: '-fPIC', ilib: 'filib', desc: 'macOS Ventura arm64' }
+###            - { os: macos-13, shell: bash, arch: x86_64, bitness: 64, runtime: ventura, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=x86_64', cmake_flags: '-fPIC', ilib: 'gaol', desc: 'macOS Ventura x86_64' }
+    name: ${{ matrix.cfg.desc }}
+    steps: 
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 1
+        clean: false
+    - run: |
+        echo ${{ runner.os }}
+        echo ${{ matrix.cfg.arch }}
+        pwd 
+        uname -a
+        cat /etc/os-release
+        lsb_release -a ;
+      shell: bash
