@@ -1,8 +1,8 @@
 #on: [push, pull_request]
 on: 
     push:
-        branches: '**'
-        tags: '' # Restrict to blank tags
+        branches: ['**']
+        tags-ignore: ['**']  # Ignore all tag pushes
     pull_request:
     #pull_request_target: # This would run the old version of the actions, which could cause confusions...
 jobs:
