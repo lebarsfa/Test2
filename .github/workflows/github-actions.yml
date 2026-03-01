@@ -7,6 +7,6 @@ on:
     #pull_request_target: # This would run the old version of the actions, which could cause confusions...
 jobs:
  build:
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps: 
     - uses: mxschmitt/action-tmate@v3
